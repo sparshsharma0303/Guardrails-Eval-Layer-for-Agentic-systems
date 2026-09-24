@@ -40,8 +40,10 @@ graph.add_edge("llm_call","call_tool_node")
 graph.add_edge("call_tool_node","respond")
 graph.add_edge("respond","summarize")
 graph.add_edge("summarize",END)
-
 app = graph.compile()
-for step_output in app.stream({"user_message": "hello agent"}, stream_mode="updates"):
-    print(step_output)
+
+
+if __name__ == "__main__":
+    for step_output in app.stream({"user_message": "hello agent"}, stream_mode="updates"):
+        print(step_output)
 
