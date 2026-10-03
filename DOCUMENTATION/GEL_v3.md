@@ -210,8 +210,8 @@ Each sub-phase is a real stopping point — if you run out of time after 1c, you
 
 | Component | Tool | Cost |
 |---|---|---|
-| Primary LLM (agent + reasoning) | Groq (LLaMA 3.3 70B / 3.1 8B) | Free tier |
-| Judge/entailment LLM pool | Google AI Studio (Gemini Flash) — separate quota pool to avoid contention with agent-run calls | Free tier |
+| Primary LLM (agent + reasoning) | Groq (`openai/gpt-oss-20b`) | Free tier |
+| Judge/entailment LLM pool | Google AI Studio (`gemini-3.5-flash-lite`) — separate quota pool to avoid contention with agent-run calls | Free tier |
 | Overflow | OpenRouter / Cloudflare Workers AI free models | Free tier |
 | Embeddings | Local sentence-transformers model or free-tier `text-embedding-004` | Free |
 | Database | Supabase or Neon (Postgres) | Free tier |
