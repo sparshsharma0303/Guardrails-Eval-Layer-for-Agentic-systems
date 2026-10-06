@@ -9,6 +9,8 @@ requires-python = ">=3.11"
 dependencies = [
     "pydantic>=2",
     "langgraph",
+    "psycopg[binary]",
+    "python-dotenv",
 ]
 
 [tool.setuptools]
