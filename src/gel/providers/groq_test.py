@@ -16,5 +16,10 @@ response = client.chat.completions.create(
 )
 
 if __name__ == "__main__":
-    print(response)
+    # print(response.__getattribute__)
+    print(response.choices[0].message.content)
+
+
+
+
 
