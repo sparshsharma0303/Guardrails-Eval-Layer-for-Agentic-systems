@@ -1,15 +1,15 @@
 import os 
-from groq import Groq
+import time
 import groq
+from groq import Groq
 from google import genai
+from google.genai import errors
 # from src.gel.providers import gemini_test,groq_test
-from dotenv import load_dotenv
-load_dotenv()
 from gel.providers.cache_store import conn,compute_cache_key,save_to_cache,get_cached_response
 from gel.providers.retry import with_retry,RetryableError
-import time
-from google.genai import errors
-
+from gel.providers.rate_limiter import RateLimitExceededError,check_rate_limit,record_call
+from dotenv import load_dotenv
+load_dotenv()
 
 def call_llm(provider:str,model: str, prompt : str) -> str:
     if provider == "mock":
@@ -20,6 +20,7 @@ def call_llm(provider:str,model: str, prompt : str) -> str:
         return cached_response
     else:
         if provider =="groq":
+            check_rate_limit(provider=provider)
             def groq_call():
                 client = Groq(api_key=os.environ["GROQ_API_KEY"])
                 response = client.chat.completions.create(
@@ -28,10 +29,12 @@ def call_llm(provider:str,model: str, prompt : str) -> str:
                 )
                 return response.choices[0].message.content
             response = with_retry(groq_call,max_retries=5, base_delay=1, retryable_exceptions=(groq.RateLimitError, groq.InternalServerError, groq.APIConnectionError))
+            record_call(provider=provider)
             save_to_cache(conn= conn,model=model,provider=provider,prompt=prompt,response=response)
             return response
 
         elif provider == "gemini":
+            check_rate_limit(provider=provider)
             def gemini_call():
                 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
                 try:
@@ -44,6 +47,7 @@ def call_llm(provider:str,model: str, prompt : str) -> str:
                         raise RetryableError(e)
                     raise
             response = with_retry(gemini_call, max_retries = 5 , base_delay=1,retryable_exceptions=(RetryableError,))
+            record_call(provider=provider)
             save_to_cache(conn= conn,model=model,provider=provider,prompt=prompt,response=response)
             return response
         else:
@@ -54,14 +58,14 @@ def call_llm(provider:str,model: str, prompt : str) -> str:
 
 if __name__ == "__main__":
     start = time.time()
-    groq_result = call_llm(provider="groq",prompt= "explain photosynthesis in one sentence",model= "openai/gpt-oss-20b")
+    groq_result = call_llm(provider="groq",prompt= "what are transformers in deep learning",model= "openai/gpt-oss-20b")
     end = time.time()
     elapsed = end-start
     # print("GROQ:", groq_result)
     print("GROQ time:", elapsed)
 
     start = time.time()
-    gemini_result = call_llm(provider="gemini", prompt="explain photosynthesis in one sentence", model="gemini-3.5-flash-lite")
+    gemini_result = call_llm(provider="gemini", prompt="what are transformers in deep learning", model="gemini-3.5-flash-lite")
     end = time.time()
     elapsed = end - start
     # print("GEMINI:", gemini_result)
@@ -69,14 +73,14 @@ if __name__ == "__main__":
 
     # print("OPENAI:",call_llm("openai", "what's 2 + 2", "miscellanious"))
     start = time.time()
-    mock_result = call_llm(provider="mock",prompt= "explain photosynthesis in one sentence", model="irrelevant-model-name")
+    mock_result = call_llm(provider="mock",prompt= "what are transformers in deep learning", model="irrelevant-model-name")
     end = time.time()
     elapsed = end-start
     print("MOCK:", mock_result)
     print("MOCK_time:", elapsed)
 
     start = time.time()
-    gemini_result_2 = call_llm(provider="gemini",prompt= "explain photosynthesis in one sentence", model= "gemini-3.5-flash-lite")
+    gemini_result_2 = call_llm(provider="gemini",prompt= "what are transformers in deep learning", model= "gemini-3.5-flash-lite")
     end = time.time()
     elapsed = end - start
     # print("GEMINI_2:", gemini_result_2)
