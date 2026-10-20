@@ -11,11 +11,13 @@ LIMITS = {
 
 call_history = {"groq": [], "gemini": []}
 
-def check_rate_limit(provider):
+def check_rate_limit(provider, stats=None):
     now = time.time()
     window = LIMITS[provider]["window_seconds"]
     call_history[provider] = [t for t in call_history[provider] if (now - t) < window]
     if len(call_history[provider]) >= LIMITS[provider]["max_calls"]:
+        if stats is not None:
+            stats["was_rate_limited"] = True
         raise RateLimitExceededError(f"Rate limit exceeded for {provider}")
 
 def record_call(provider:str):

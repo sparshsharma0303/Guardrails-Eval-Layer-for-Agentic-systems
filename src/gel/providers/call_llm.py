@@ -11,16 +11,19 @@ from gel.providers.rate_limiter import RateLimitExceededError,check_rate_limit,r
 from dotenv import load_dotenv
 load_dotenv()
 
-def call_llm(provider:str,model: str, prompt : str) -> str:
+def call_llm(provider: str, model: str, prompt: str, stats: dict | None = None) -> str:
     if provider == "mock":
         return prompt
     cache_key = compute_cache_key(provider=provider,model=model,prompt=prompt)
     cached_response = get_cached_response(conn=conn,cache_key=cache_key)
+    if stats is None:
+        stats = {"retry_count":0,"was_rate_limited":False}
     if cached_response:
         return cached_response
     else:
         if provider =="groq":
-            check_rate_limit(provider=provider)
+            
+            check_rate_limit(provider=provider,stats=stats)
             def groq_call():
                 client = Groq(api_key=os.environ["GROQ_API_KEY"])
                 response = client.chat.completions.create(
@@ -28,13 +31,12 @@ def call_llm(provider:str,model: str, prompt : str) -> str:
                     messages = [{"role": "user", "content": prompt}]
                 )
                 return response.choices[0].message.content
-            response = with_retry(groq_call,max_retries=5, base_delay=1, retryable_exceptions=(groq.RateLimitError, groq.InternalServerError, groq.APIConnectionError))
+            response = with_retry(groq_call,max_retries=5, base_delay=1, retryable_exceptions=(groq.RateLimitError, groq.InternalServerError, groq.APIConnectionError),stats=stats)
             record_call(provider=provider)
             save_to_cache(conn= conn,model=model,provider=provider,prompt=prompt,response=response)
             return response
-
         elif provider == "gemini":
-            check_rate_limit(provider=provider)
+            check_rate_limit(provider=provider,stats=stats)
             def gemini_call():
                 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
                 try:
@@ -46,7 +48,7 @@ def call_llm(provider:str,model: str, prompt : str) -> str:
                     if e.code == 429:
                         raise RetryableError(e)
                     raise
-            response = with_retry(gemini_call, max_retries = 5 , base_delay=1,retryable_exceptions=(RetryableError,))
+            response = with_retry(gemini_call, max_retries = 5 , base_delay=1,retryable_exceptions=(RetryableError,),stats= stats)
             record_call(provider=provider)
             save_to_cache(conn= conn,model=model,provider=provider,prompt=prompt,response=response)
             return response
@@ -76,7 +78,7 @@ if __name__ == "__main__":
     mock_result = call_llm(provider="mock",prompt= "what are transformers in deep learning", model="irrelevant-model-name")
     end = time.time()
     elapsed = end-start
-    print("MOCK:", mock_result)
+    # print("MOCK:", mock_result)
     print("MOCK_time:", elapsed)
 
     start = time.time()
@@ -85,3 +87,8 @@ if __name__ == "__main__":
     elapsed = end - start
     # print("GEMINI_2:", gemini_result_2)
     print("GEMINI_2 time:", elapsed)
+
+    my_stats = {"retry_count": 0, "was_rate_limited": False}
+    result = call_llm(provider="gemini", model="gemini-3.5-flash-lite", prompt="some new unique prompt", stats=my_stats)
+    print("response:", result)
+    print("stats after call:", my_stats)

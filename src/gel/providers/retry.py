@@ -6,15 +6,18 @@ class RetryableError(Exception):
     pass
 
 
-def with_retry(func, max_retries=3, base_delay=1, retryable_exceptions=(Exception,)):
+def with_retry(func, max_retries=3, base_delay=1, retryable_exceptions=(Exception,),stats = None):
     last_exception = None
     for attempt in range(max_retries):
         try:
+            if stats is not None:
+                stats["retry_count"] = attempt
             return func()
         except retryable_exceptions as e:
             last_exception = e
             delay = base_delay * (2 ** attempt)
             time.sleep(delay)
+        
     raise last_exception
 
 
