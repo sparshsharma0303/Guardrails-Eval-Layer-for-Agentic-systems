@@ -32,3 +32,17 @@ CREATE TABLE IF NOT EXISTS steps(
     payload JSONB NOT NULL
 
 );
+
+
+CREATE TABLE IF NOT EXISTS signals(
+    signal_id TEXT PRIMARY KEY,
+    trace_id TEXT NOT NULL REFERENCES traces(trace_id),
+    timestamp TIMESTAMPTZ NOT NULL,
+    evaluator_version TEXT NOT NULL,
+    score DOUBLE PRECISION NOT NULL,
+    severity TEXT NOT NULL ,
+    eval_method TEXT NOT NULL,
+    payload JSONB NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_signals_trace_id ON signals(trace_id);
