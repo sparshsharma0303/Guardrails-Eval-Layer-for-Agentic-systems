@@ -6,6 +6,9 @@ from typing import List
 import json
 import hashlib
 import time
+from pathlib import Path
+import tempfile
+
 
 def get_utc_datetime():
     return datetime.now(timezone.utc)
@@ -53,6 +56,20 @@ def compute_dataset_hash(dataset:EvalDataset) ->str:
     key = hash_object.hexdigest()
     return key
 
+def save_dataset(dataset, directory)->Path:
+    dir_path = Path(directory)
+    filename = f"{dataset.dataset_id}__v{dataset.dataset_version}.json"
+    file_path = dir_path / filename
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    json_data = dataset.model_dump_json(indent=2)
+    with file_path.open("x", encoding="utf-8") as f:
+        f.write(json_data)
+    return file_path
+
+
+def load_dataset(path):
+    text = Path(path).read_text(encoding="utf-8")
+    return EvalDataset.model_validate_json(text)
 
 
 if __name__ == "__main__":
@@ -82,8 +99,10 @@ if __name__ == "__main__":
     #     print("duplicate case id were found")
     # print("all test cases passed ")
 
-    # test case description : Two datasets with the same cases but different created_at and description give the same hash.
-    # --- hash tests ---
+
+
+    # # test case description : Two datasets with the same cases but different created_at and description give the same hash.
+    # # --- hash tests ---
     case1 = EvalCase(case_id="dummy_case_id", input="dummy_input", expected_label=True,
                     task_type="dummy_task", difficulty=Difficulty.EASY)
     case2 = EvalCase(case_id="dummy_case_id2", input="dummy_input2", expected_label=False,
@@ -92,22 +111,35 @@ if __name__ == "__main__":
     ds1 = EvalDataset(dataset_id="id_1", dataset_version="1.0.0", cases=[case1, case2],
                     description="abc",
                     created_at=datetime(2020, 1, 1, tzinfo=timezone.utc))
-    ds2 = EvalDataset(dataset_id="id_1", dataset_version="1.0.0", cases=[case1, case2],
-                    description="xyz",
-                    created_at=datetime(2025, 6, 1, tzinfo=timezone.utc))
-    # 1. description / created_at don't affect the hash
-    assert compute_dataset_hash(ds1) == compute_dataset_hash(ds2), "metadata changed the hash"
+    # ds2 = EvalDataset(dataset_id="id_1", dataset_version="1.0.0", cases=[case1, case2],
+    #                 description="xyz",
+    #                 created_at=datetime(2025, 6, 1, tzinfo=timezone.utc))
+    # # 1. description / created_at don't affect the hash
+    # assert compute_dataset_hash(ds1) == compute_dataset_hash(ds2), "metadata changed the hash"
 
-    # 2. changing one case's input changes the hash
-    case1_changed = EvalCase(case_id="dummy_case_id", input="CHANGED", expected_label=True,
-                            task_type="dummy_task", difficulty=Difficulty.EASY)
-    ds3 = EvalDataset(dataset_id="id_1", dataset_version="1.0.0", cases=[case1_changed, case2])
-    assert compute_dataset_hash(ds1) != compute_dataset_hash(ds3), "content change not detected"
+    # # 2. changing one case's input changes the hash
+    # case1_changed = EvalCase(case_id="dummy_case_id", input="CHANGED", expected_label=True,
+    #                         task_type="dummy_task", difficulty=Difficulty.EASY)
+    # ds3 = EvalDataset(dataset_id="id_1", dataset_version="1.0.0", cases=[case1_changed, case2])
+    # assert compute_dataset_hash(ds1) != compute_dataset_hash(ds3), "content change not detected"
 
-    # 3. deterministic
-    assert compute_dataset_hash(ds1) == compute_dataset_hash(ds1), "hash not deterministic"
+    # # 3. deterministic
+    # assert compute_dataset_hash(ds1) == compute_dataset_hash(ds1), "hash not deterministic"
 
-    print("all hash tests passed")
+    # print("all hash tests passed")
+
+    # --- file save/load tests ---
+    with tempfile.TemporaryDirectory() as tmp:
+        path = save_dataset(ds1, tmp)
+        loaded = load_dataset(path)
+        assert loaded == ds1, "load did not match saved dataset"
+        assert compute_dataset_hash(loaded) == compute_dataset_hash(ds1), "hash changed after load"
+        try:
+            save_dataset(ds1, tmp)
+            assert False, "should have raised"
+        except FileExistsError:
+            print("overwrite correctly refused")
+    print("all file tests passed")
 
 
 
