@@ -1,0 +1,208 @@
+{
+  "dataset_id": "rule-based-checks",
+  "dataset_version": "1.0.0",
+  "created_at": "2026-10-30T08:40:31.314554Z",
+  "description": "25 hand-labeled cases for rule-based evaluators",
+  "cases": [
+    {
+      "case_id": "case-001",
+      "input": "{\"a\": 1}",
+      "expected_output": null,
+      "expected_label": true,
+      "task_type": "valid_json",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-002",
+      "input": "[1, 2, 3]",
+      "expected_output": null,
+      "expected_label": true,
+      "task_type": "valid_json",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-003",
+      "input": "hello world",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "valid_json",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-004",
+      "input": "{\"a\": 1,}",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "valid_json",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "case-005",
+      "input": "{'a': 1}",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "valid_json",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "case-006",
+      "input": "{\"answer\": \"Paris\", \"confidence\": 0.9}",
+      "expected_output": null,
+      "expected_label": true,
+      "task_type": "required_fields",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-007",
+      "input": "{\"answer\": \"Paris\"}",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "required_fields",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-008",
+      "input": "{\"confidence\": 0.9}",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "required_fields",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "case-009",
+      "input": "{\"answer\": \"\", \"confidence\": 0.1, \"extra\": true}",
+      "expected_output": null,
+      "expected_label": true,
+      "task_type": "required_fields",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "case-010",
+      "input": "{\"Answer\": \"Paris\", \"Confidence\": 0.9}",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "required_fields",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "case-011",
+      "input": "Short answer.",
+      "expected_output": null,
+      "expected_label": true,
+      "task_type": "max_length",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-012",
+      "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "expected_output": null,
+      "expected_label": true,
+      "task_type": "max_length",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "case-013",
+      "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "max_length",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "case-014",
+      "input": "This sentence is definitely much longer than fifty characters in total.",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "max_length",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-015",
+      "input": "",
+      "expected_output": null,
+      "expected_label": true,
+      "task_type": "max_length",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "case-016",
+      "input": "The weather is sunny today.",
+      "expected_output": null,
+      "expected_label": true,
+      "task_type": "forbidden_pattern",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-017",
+      "input": "Your password is hunter2",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "forbidden_pattern",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-018",
+      "input": "Enter your PASSWORD below",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "forbidden_pattern",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "case-019",
+      "input": "Passwords should be rotated",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "forbidden_pattern",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "case-020",
+      "input": "The passcode is 1234",
+      "expected_output": null,
+      "expected_label": true,
+      "task_type": "forbidden_pattern",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "case-021",
+      "input": "{\"tool_name\": \"search\", \"args\": {\"query\": \"weather in Indore\"}}",
+      "expected_output": null,
+      "expected_label": true,
+      "task_type": "tool_args",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-022",
+      "input": "{\"tool_name\": \"search\", \"args\": {}}",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "tool_args",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "case-023",
+      "input": "{\"tool_name\": \"search\", \"args\": {\"query\": \"\"}}",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "tool_args",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "case-024",
+      "input": "{\"tool_name\": \"delete\", \"args\": {\"query\": \"x\"}}",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "tool_args",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "case-025",
+      "input": "{\"tool_name\": \"search\", \"args\": {\"query\": 42}}",
+      "expected_output": null,
+      "expected_label": false,
+      "task_type": "tool_args",
+      "difficulty": "hard"
+    }
+  ]
+}
