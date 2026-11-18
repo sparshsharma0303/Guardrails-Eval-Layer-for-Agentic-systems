@@ -2,6 +2,8 @@
 import math
 from collections.abc import Sequence
 from sentence_transformers import SentenceTransformer
+from gel.schema.eval_signal import Signal,Severity,EvalMethod
+
 
 MODEL_NAME = "all-MiniLM-L6-v2"
 _model: SentenceTransformer | None = None
@@ -26,35 +28,51 @@ def embed_text(text: str) -> list[float]:
     return _model.encode(text).tolist()
 
 
+EVALUATOR_VERSION = "1.0.0"
+
+
+def run_embedding_check(
+    reference: str,
+    candidate: str,
+    trace_id: str,
+    trace_span_ids: list[str],
+    threshold: float = 0.5,
+) -> Signal:
+    raw_cosine = cosine_similarity(embed_text(reference), embed_text(candidate))
+    score = max(0.0, min(1.0, raw_cosine))
+
+    if score >= threshold:
+        severity = Severity.INFORMATIONAL
+        evidence = []
+    else:
+        severity = Severity.MEDIUM
+        evidence = [f"reference: {reference[:200]}", f"candidate: {candidate[:200]}"]
+
+    return Signal(
+        score=score,
+        severity=severity,
+        eval_method=EvalMethod.EMBEDDINGS,
+        evaluator_version=EVALUATOR_VERSION,
+        rubric_breakdown={"semantic_similarity": raw_cosine},
+        evidence=evidence,
+        trace_id=trace_id,
+        trace_span_ids=trace_span_ids,
+        confidence=None,
+        known_limitations=(
+            "Measures semantic closeness, not factual support; "
+            "cannot detect negation or contradiction."
+        ),
+        judge_model=None,
+        prompt_version=None,
+    )
+
 if __name__ == "__main__":
-    # 1. Identical vectors -> ~1.0
-    sim_identical = cosine_similarity([1.0, 2.0, 3.0], [1.0, 2.0, 3.0])
-    assert math.isclose(sim_identical, 1.0), f"Expected ~1.0, got {sim_identical}"
-    print(f"Identical vectors:  {sim_identical}")
-
-    # 2. Orthogonal vectors -> 0.0
-    sim_orthogonal = cosine_similarity([1.0, 0.0], [0.0, 1.0])
-    assert math.isclose(sim_orthogonal, 0.0), f"Expected 0.0, got {sim_orthogonal}"
-    print(f"Orthogonal vectors: {sim_orthogonal}")
-
-    # 3. Opposite vectors -> ~-1.0
-    sim_opposite = cosine_similarity([1.0, 2.0, 3.0], [-1.0, -2.0, -3.0])
-    assert math.isclose(sim_opposite, -1.0), f"Expected -1.0, got {sim_opposite}"
-    print(f"Opposite vectors:   {sim_opposite}")
-
-    # 4. Zero vector -> 0.0
-    sim_zero = cosine_similarity([0.0, 0.0, 0.0], [1.0, 2.0, 3.0])
-    assert sim_zero == 0.0, f"Expected 0.0, got {sim_zero}"
-    print(f"Zero vector:        {sim_zero}")
-
-    print("All cosine_similarity tests passed!")
-
-    a = embed_text("The cat sat on the mat.")
-    b = embed_text("A kitten is resting on a rug.")
-    c = embed_text("Quarterly revenue grew by twelve percent.")
-    sim_similar = cosine_similarity(a, b)
-    sim_different = cosine_similarity(a, c)
-    print(f"similar: {sim_similar:.3f}  different: {sim_different:.3f}")
-    assert len(a) == 384, "unexpected embedding size"
-    assert sim_similar > sim_different, "embeddings don't rank similar text higher"
-    print("embed_text tests passed")
+    from gel.schema.eval_signal import Signal, Severity, EvalMethod
+    ok = run_embedding_check("The cat sat on the mat.", "A kitten is resting on a rug.", "t-1", ["s-1"])
+    bad = run_embedding_check("The cat sat on the mat.", "Quarterly revenue grew by twelve percent.", "t-1", ["s-1"])
+    assert ok.severity == Severity.INFORMATIONAL and ok.evidence == []
+    assert bad.severity == Severity.MEDIUM and len(bad.evidence) == 2
+    assert 0.0 <= bad.score <= 1.0 and bad.rubric_breakdown["semantic_similarity"] < 0.0
+    assert ok.eval_method == EvalMethod.EMBEDDINGS and ok.confidence is None
+    assert Signal.model_validate_json(bad.model_dump_json()) == bad
+    print("run_embedding_check tests passed")
