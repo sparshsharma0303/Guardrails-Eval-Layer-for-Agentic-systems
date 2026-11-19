@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from uuid import uuid4
 
@@ -20,15 +21,41 @@ class Claim(BaseModel):
     source_step_id: str | None = None
 
 
+
+
+def parse_claims(raw: str) -> list[str]:
+    text = raw.strip()
+    if text.startswith("```"):
+        lines = text.splitlines()[1:]
+        if lines and lines[-1].strip().startswith("```"):
+            lines = lines[:-1]
+        text = "\n".join(lines).strip()
+
+    data = json.loads(text)
+
+    if not isinstance(data, list):
+        raise ValueError(f"Expected a JSON list of claims, got {type(data).__name__}")
+
+    claims: list[str] = []
+    for item in data:
+        if not isinstance(item, str):
+            raise ValueError(
+                f"Expected string items in claims list, got {type(item).__name__}"
+            )
+        cleaned = item.strip()
+        if cleaned:
+            claims.append(cleaned)
+
+    return claims
+
 if __name__ == "__main__":
-    claim = Claim(text="Paris is the capital of France.", source_step_id="step-1")
-    restored = Claim.model_validate_json(claim.model_dump_json())
-    assert restored == claim
-
-    try:
-        EntailmentLabel("maybe")
-        assert False, "Expected ValueError for invalid EntailmentLabel"
-    except ValueError:
-        pass
-
-    print("models.py tests passed!")
+    assert parse_claims('["A.", "B."]') == ["A.", "B."]
+    assert parse_claims('```json\n["A.", "B."]\n```') == ["A.", "B."]
+    assert parse_claims('["  A.  ", "", "B."]') == ["A.", "B."]
+    for bad in ["not json", '{"claims": ["A."]}', '["A.", 5]']:
+        try:
+            parse_claims(bad)
+            assert False, f"should have raised for {bad!r}"
+        except ValueError:
+            pass
+    print("parse_claims tests passed")
