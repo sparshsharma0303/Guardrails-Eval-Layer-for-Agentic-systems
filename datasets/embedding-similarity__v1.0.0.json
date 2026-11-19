@@ -1,0 +1,184 @@
+{
+  "dataset_id": "embedding-similarity",
+  "dataset_version": "1.0.0",
+  "created_at": "2026-11-19T04:16:52.802583Z",
+  "description": "Hand-labeled same-meaning pairs for the embedding benchmark",
+  "cases": [
+    {
+      "case_id": "emb-001",
+      "input": "A kitten is resting on a rug.",
+      "expected_output": "The cat sat on the mat.",
+      "expected_label": true,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-002",
+      "input": "The meeting has been moved to 3 PM.",
+      "expected_output": "We rescheduled the meeting to three in the afternoon.",
+      "expected_label": true,
+      "task_type": "semantic_similarity",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "emb-003",
+      "input": "Python is a popular programming language.",
+      "expected_output": "Many developers use Python for programming.",
+      "expected_label": true,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-004",
+      "input": "The server crashed because it ran out of memory.",
+      "expected_output": "An out-of-memory error brought the server down.",
+      "expected_label": true,
+      "task_type": "semantic_similarity",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "emb-005",
+      "input": "Paris is the capital of France.",
+      "expected_output": "France's capital city is Paris.",
+      "expected_label": true,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-006",
+      "input": "Please reset your password using the link.",
+      "expected_output": "Use the link to reset your password.",
+      "expected_label": true,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-007",
+      "input": "The film was excellent and I enjoyed it.",
+      "expected_output": "I loved the movie; it was great.",
+      "expected_label": true,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-008",
+      "input": "Water boils at 100 degrees Celsius.",
+      "expected_output": "At sea level, water reaches its boiling point at 100°C.",
+      "expected_label": true,
+      "task_type": "semantic_similarity",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "emb-009",
+      "input": "The API returned an error for the invalid request.",
+      "expected_output": "The request was invalid so the API responded with an error.",
+      "expected_label": true,
+      "task_type": "semantic_similarity",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "emb-010",
+      "input": "She walked her dog in the park this morning.",
+      "expected_output": "This morning she took the dog for a walk in the park.",
+      "expected_label": true,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-011",
+      "input": "Quarterly revenue grew by twelve percent.",
+      "expected_output": "The cat sat on the mat.",
+      "expected_label": false,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-012",
+      "input": "The meeting has been moved to 3 PM.",
+      "expected_output": "Water boils at 100 degrees Celsius.",
+      "expected_label": false,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-013",
+      "input": "Python is a popular programming language.",
+      "expected_output": "She walked her dog in the park this morning.",
+      "expected_label": false,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-014",
+      "input": "The server crashed because it ran out of memory.",
+      "expected_output": "The film was excellent and I enjoyed it.",
+      "expected_label": false,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-015",
+      "input": "Paris is the capital of France.",
+      "expected_output": "The API returned an error for the invalid request.",
+      "expected_label": false,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-016",
+      "input": "I enjoy hiking in the mountains.",
+      "expected_output": "The stock market closed lower on Friday.",
+      "expected_label": false,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-017",
+      "input": "The recipe needs two cups of flour.",
+      "expected_output": "The satellite was launched into orbit yesterday.",
+      "expected_label": false,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-018",
+      "input": "Tickets for the concert sold out quickly.",
+      "expected_output": "Photosynthesis converts sunlight into chemical energy.",
+      "expected_label": false,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-019",
+      "input": "The new phone has a great camera.",
+      "expected_output": "The football match ended in a draw.",
+      "expected_label": false,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-020",
+      "input": "He apologised for being late to the interview.",
+      "expected_output": "The bridge was closed for repairs.",
+      "expected_label": false,
+      "task_type": "semantic_similarity",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "emb-021",
+      "input": "Paris is not the capital of France.",
+      "expected_output": "Paris is the capital of France.",
+      "expected_label": false,
+      "task_type": "negation_limitation",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "emb-022",
+      "input": "The server did not crash.",
+      "expected_output": "The server crashed because it ran out of memory.",
+      "expected_label": false,
+      "task_type": "negation_limitation",
+      "difficulty": "hard"
+    }
+  ]
+}
