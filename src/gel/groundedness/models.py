@@ -19,6 +19,12 @@ class Claim(BaseModel):
     text: str
     source_step_id: str | None = None
 
+class EvidenceSpan(BaseModel):
+    doc_id:str
+    text: str
+    similarity: float
+    
+
 
 if __name__ == "__main__":
     claim = Claim(text="Paris is the capital of France.", source_step_id="step-1")
