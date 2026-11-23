@@ -23,6 +23,12 @@ class EvidenceSpan(BaseModel):
     doc_id:str
     text: str
     similarity: float
+
+class ClaimVerdict(BaseModel):
+    claim: Claim
+    label: EntailmentLabel
+    reason: str = ""
+    evidence: list[EvidenceSpan] = Field(default_factory=list)
     
 
 
