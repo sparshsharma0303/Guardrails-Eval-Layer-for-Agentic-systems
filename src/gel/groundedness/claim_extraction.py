@@ -1,20 +1,18 @@
 import json
 
 from gel.groundedness.models import Claim
+from gel.groundedness.llm_output import strip_code_fences
 
 from gel.providers.call_llm import call_llm
 from pydantic import BaseModel, Field
 
 def parse_claims(raw: str) -> list[str]:
-    text = raw.strip()
-    if text.startswith("```"):
-        lines = text.splitlines()[1:]
-        if lines and lines[-1].strip().startswith("```"):
-            lines = lines[:-1]
-        text = "\n".join(lines).strip()
+    text = strip_code_fences(raw)
     data = json.loads(text)
+
     if not isinstance(data, list):
         raise ValueError(f"Expected a JSON list of claims, got {type(data).__name__}")
+
     claims: list[str] = []
     for item in data:
         if not isinstance(item, str):
@@ -24,6 +22,7 @@ def parse_claims(raw: str) -> list[str]:
         cleaned = item.strip()
         if cleaned:
             claims.append(cleaned)
+
     return claims
 
 
