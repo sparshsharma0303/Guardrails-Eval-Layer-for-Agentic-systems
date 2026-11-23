@@ -6,6 +6,34 @@ from gel.groundedness.llm_output import strip_code_fences
 from gel.providers.call_llm import call_llm
 from pydantic import BaseModel, Field
 
+from gel.evaluators.embedding import cosine_similarity, embed_text
+from gel.groundedness.evidence_retrieval import split_into_spans
+from gel.groundedness.models import Claim
+
+
+def compute_extraction_confidence(answer: str, claims: list[Claim]) -> float:
+    if not claims:
+        return 0.0
+
+    spans = split_into_spans(answer)
+    if not spans:
+        return 0.0
+
+    span_embeddings = [embed_text(span) for span in spans]
+
+    best_scores: list[float] = []
+    for claim in claims:
+        claim_embedding = embed_text(claim.text)
+        raw_best = max(
+            cosine_similarity(claim_embedding, span_emb)
+            for span_emb in span_embeddings
+        )
+        clamped = max(0.0, min(1.0, raw_best))
+        best_scores.append(clamped)
+
+    return sum(best_scores) / len(best_scores)
+
+
 def parse_claims(raw: str) -> list[str]:
     text = strip_code_fences(raw)
     data = json.loads(text)
@@ -70,3 +98,18 @@ if __name__ == "__main__":
     print([c.text for c in claims])
     assert len(claims) >= 2 and all(c.source_step_id == "step-9" for c in claims)
     print("extract_claims tests passed")
+
+    from gel.groundedness.models import Claim
+    ans = "Paris is the capital of France and has about two million residents."
+    good = [Claim(text="Paris is the capital of France."), Claim(text="Paris has about two million residents.")]
+    bad = [Claim(text="The moon is made of cheese.")]
+    mixed = good + bad
+
+    c_good = compute_extraction_confidence(ans, good)
+    c_bad = compute_extraction_confidence(ans, bad)
+    c_mixed = compute_extraction_confidence(ans, mixed)
+    print(f"good={c_good:.3f} bad={c_bad:.3f} mixed={c_mixed:.3f}")
+    assert c_good >= 0.5 and c_bad < 0.3
+    assert c_bad < c_mixed < c_good
+    assert compute_extraction_confidence(ans, []) == 0.0 and compute_extraction_confidence("", good) == 0.0
+    print("extraction confidence tests passed")

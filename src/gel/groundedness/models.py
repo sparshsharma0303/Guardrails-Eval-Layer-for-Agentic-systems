@@ -30,7 +30,13 @@ class ClaimVerdict(BaseModel):
     reason: str = ""
     evidence: list[EvidenceSpan] = Field(default_factory=list)
     
-
+class GroundednessMetrics(BaseModel):
+    num_claims: int
+    num_unsupported_claims: int
+    num_contradicted_claims: int
+    evidence_coverage: float
+    retrieval_failure_rate: float
+    claim_extraction_confidence: float
 
 if __name__ == "__main__":
     claim = Claim(text="Paris is the capital of France.", source_step_id="step-1")
