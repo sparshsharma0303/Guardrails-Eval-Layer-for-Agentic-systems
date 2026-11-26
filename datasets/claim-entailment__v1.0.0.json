@@ -1,0 +1,248 @@
+{
+  "dataset_id": "claim-entailment",
+  "dataset_version": "1.0.0",
+  "created_at": "2026-11-26T12:46:09.253923Z",
+  "description": "30 hand-labeled (claim, context) cases: 10 entailed, 10 contradicted, 10 not_enough_info",
+  "cases": [
+    {
+      "case_id": "claim-001",
+      "input": "The Eiffel Tower was completed in 1889.",
+      "expected_output": "The Eiffel Tower is located in Paris. It was completed in 1889 and stands about 330 metres tall.",
+      "expected_label": true,
+      "task_type": "entailed",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-002",
+      "input": "The Eiffel Tower is about 330 metres tall.",
+      "expected_output": "The Eiffel Tower is located in Paris. It was completed in 1889 and stands about 330 metres tall.",
+      "expected_label": true,
+      "task_type": "entailed",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-003",
+      "input": "Python was first released in 1991.",
+      "expected_output": "Python was created by Guido van Rossum and first released in 1991. It emphasizes code readability.",
+      "expected_label": true,
+      "task_type": "entailed",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-004",
+      "input": "Guido van Rossum created Python.",
+      "expected_output": "Python was created by Guido van Rossum and first released in 1991. It emphasizes code readability.",
+      "expected_label": true,
+      "task_type": "entailed",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-005",
+      "input": "Mount Everest lies on the Nepal-China border.",
+      "expected_output": "Mount Everest is the highest mountain above sea level. It is located in the Himalayas on the border between Nepal and China.",
+      "expected_label": true,
+      "task_type": "entailed",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-006",
+      "input": "Water boils at a lower temperature at high altitude.",
+      "expected_output": "Water boils at 100 degrees Celsius at sea level. At higher altitudes, the boiling point is lower.",
+      "expected_label": true,
+      "task_type": "entailed",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-007",
+      "input": "Revenue increased between 2022 and 2023.",
+      "expected_output": "The company reported revenue of 12 million dollars in 2023, up from 10 million in 2022.",
+      "expected_label": true,
+      "task_type": "entailed",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-008",
+      "input": "Marie Curie won Nobel Prizes in two different fields.",
+      "expected_output": "Marie Curie won the Nobel Prize in Physics in 1903 and the Nobel Prize in Chemistry in 1911.",
+      "expected_label": true,
+      "task_type": "entailed",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "claim-009",
+      "input": "The library is closed on Saturdays.",
+      "expected_output": "The library opens at 9 AM and closes at 5 PM on weekdays. It is closed on weekends.",
+      "expected_label": true,
+      "task_type": "entailed",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-010",
+      "input": "Plants release oxygen during photosynthesis.",
+      "expected_output": "Photosynthesis converts light energy into chemical energy. Plants use carbon dioxide and water, and release oxygen.",
+      "expected_label": true,
+      "task_type": "entailed",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-011",
+      "input": "The Eiffel Tower was completed in 1925.",
+      "expected_output": "The Eiffel Tower is located in Paris. It was completed in 1889 and stands about 330 metres tall.",
+      "expected_label": false,
+      "task_type": "contradicted",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-012",
+      "input": "The Eiffel Tower is located in London.",
+      "expected_output": "The Eiffel Tower is located in Paris. It was completed in 1889 and stands about 330 metres tall.",
+      "expected_label": false,
+      "task_type": "contradicted",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-013",
+      "input": "Python was first released in 2005.",
+      "expected_output": "Python was created by Guido van Rossum and first released in 1991. It emphasizes code readability.",
+      "expected_label": false,
+      "task_type": "contradicted",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-014",
+      "input": "Python was created by Dennis Ritchie.",
+      "expected_output": "Python was created by Guido van Rossum and first released in 1991. It emphasizes code readability.",
+      "expected_label": false,
+      "task_type": "contradicted",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-015",
+      "input": "Mount Everest is located in the Andes.",
+      "expected_output": "Mount Everest is the highest mountain above sea level. It is located in the Himalayas on the border between Nepal and China.",
+      "expected_label": false,
+      "task_type": "contradicted",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-016",
+      "input": "Water boils at a higher temperature at high altitude.",
+      "expected_output": "Water boils at 100 degrees Celsius at sea level. At higher altitudes, the boiling point is lower.",
+      "expected_label": false,
+      "task_type": "contradicted",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-017",
+      "input": "Revenue decreased between 2022 and 2023.",
+      "expected_output": "The company reported revenue of 12 million dollars in 2023, up from 10 million in 2022.",
+      "expected_label": false,
+      "task_type": "contradicted",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-018",
+      "input": "Marie Curie won the Nobel Prize in Physics in 1911.",
+      "expected_output": "Marie Curie won the Nobel Prize in Physics in 1903 and the Nobel Prize in Chemistry in 1911.",
+      "expected_label": false,
+      "task_type": "contradicted",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "claim-019",
+      "input": "The library is open on Sundays.",
+      "expected_output": "The library opens at 9 AM and closes at 5 PM on weekdays. It is closed on weekends.",
+      "expected_label": false,
+      "task_type": "contradicted",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-020",
+      "input": "Plants release carbon dioxide during photosynthesis.",
+      "expected_output": "Photosynthesis converts light energy into chemical energy. Plants use carbon dioxide and water, and release oxygen.",
+      "expected_label": false,
+      "task_type": "contradicted",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-021",
+      "input": "The Eiffel Tower was designed by Gustave Eiffel.",
+      "expected_output": "The Eiffel Tower is located in Paris. It was completed in 1889 and stands about 330 metres tall.",
+      "expected_label": false,
+      "task_type": "not_enough_info",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "claim-022",
+      "input": "The Eiffel Tower receives millions of visitors each year.",
+      "expected_output": "The Eiffel Tower is located in Paris. It was completed in 1889 and stands about 330 metres tall.",
+      "expected_label": false,
+      "task_type": "not_enough_info",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-023",
+      "input": "Python is the most popular programming language in the world.",
+      "expected_output": "Python was created by Guido van Rossum and first released in 1991. It emphasizes code readability.",
+      "expected_label": false,
+      "task_type": "not_enough_info",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-024",
+      "input": "Python is slower than C.",
+      "expected_output": "Python was created by Guido van Rossum and first released in 1991. It emphasizes code readability.",
+      "expected_label": false,
+      "task_type": "not_enough_info",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "claim-025",
+      "input": "Mount Everest is 8,849 metres tall.",
+      "expected_output": "Mount Everest is the highest mountain above sea level. It is located in the Himalayas on the border between Nepal and China.",
+      "expected_label": false,
+      "task_type": "not_enough_info",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "claim-026",
+      "input": "Water freezes at 0 degrees Celsius.",
+      "expected_output": "Water boils at 100 degrees Celsius at sea level. At higher altitudes, the boiling point is lower.",
+      "expected_label": false,
+      "task_type": "not_enough_info",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "claim-027",
+      "input": "The company was profitable in 2023.",
+      "expected_output": "The company reported revenue of 12 million dollars in 2023, up from 10 million in 2022.",
+      "expected_label": false,
+      "task_type": "not_enough_info",
+      "difficulty": "medium"
+    },
+    {
+      "case_id": "claim-028",
+      "input": "Marie Curie was born in Poland.",
+      "expected_output": "Marie Curie won the Nobel Prize in Physics in 1903 and the Nobel Prize in Chemistry in 1911.",
+      "expected_label": false,
+      "task_type": "not_enough_info",
+      "difficulty": "hard"
+    },
+    {
+      "case_id": "claim-029",
+      "input": "The library has a cafe.",
+      "expected_output": "The library opens at 9 AM and closes at 5 PM on weekdays. It is closed on weekends.",
+      "expected_label": false,
+      "task_type": "not_enough_info",
+      "difficulty": "easy"
+    },
+    {
+      "case_id": "claim-030",
+      "input": "Photosynthesis occurs in the chloroplasts.",
+      "expected_output": "Photosynthesis converts light energy into chemical energy. Plants use carbon dioxide and water, and release oxygen.",
+      "expected_label": false,
+      "task_type": "not_enough_info",
+      "difficulty": "hard"
+    }
+  ]
+}
