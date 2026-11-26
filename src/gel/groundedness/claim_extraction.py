@@ -10,6 +10,7 @@ from gel.evaluators.embedding import cosine_similarity, embed_text
 from gel.groundedness.evidence_retrieval import split_into_spans
 from gel.groundedness.models import Claim
 
+PROMPT_VERSION = "claim-extraction-v1"
 
 def compute_extraction_confidence(answer: str, claims: list[Claim]) -> float:
     if not claims:
