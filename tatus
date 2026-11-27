@@ -1,0 +1,35 @@
+[33mcommit 59a2c5950eb5a6e1a8925956f2a900ec25b394b0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: sparsh sharma <sparshsharma0303@gmail.com>
+Date:   Thu Sep 24 14:08:24 2026 +0530
+
+    Task 4: privacy/redaction filter; Task 2 fixes: AgentMessageStep is_final_answer distinction, remove duplicated graph wiring
+
+ src/gel/adapters/langgraph_adapter.py      | 61 [32m+++++++[m[31m-----------------------[m
+ tests/fixtures/minimal_langgraph_agents.py |  8 [32m++[m[31m--[m
+ 2 files changed, 18 insertions(+), 51 deletions(-)
+
+[33mcommit 01af99760b05ad2df0f379bde1e22647fbbf1fa1[m
+Author: sparsh sharma <sparshsharma0303@gmail.com>
+Date:   Wed Sep 23 18:32:43 2026 +0530
+
+    Add privacy/redaction filter (Task 4): patterns, redact_text, redact_value, redact_step, redact_trace
+
+ src/gel/redaction/__init__.py |   0
+ src/gel/redaction/patterns.py | 148 [32m++++++++++++++++++++++++++++++++++++++++++[m
+ 2 files changed, 148 insertions(+)
+
+[33mcommit 6296c6bc06b4cefdc594af675162d61eccadc832[m
+Author: sparsh sharma <sparshsharma0303@gmail.com>
+Date:   Mon Sep 21 18:20:00 2026 +0530
+
+    Task 3: Postgres trace store
+    
+    - Add src/gel/storage/schema.sql: traces + steps tables (Option B - shared StepBase fields as real columns, full step payload duplicated into JSONB for reconstruction), IF NOT EXISTS on both
+    - Add src/gel/storage/trace_store.py: save_trace_metadata, save_steps, load_trace_metadata, load_steps (uses TypeAdapter(Step) to reconstruct correct subclass from payload), load_trace
+    - Verified via round-trip assert against real Neon Postgres: loaded.model_dump() == trace.model_dump(), zero data loss including run_status
+    - Uses Neon (Postgres-only free tier) + raw SQL via psycopg + python-dotenv for DATABASE_URL (.env, gitignored)
+
+ src/gel/storage/__init__.py    |   0
+ src/gel/storage/schema.sql     |  34 [32m++++++++++[m
+ src/gel/storage/trace_store.py | 145 [32m+++++++++++++++++++++++++++++++++++++++++[m
+ 3 files changed, 179 insertions(+)
