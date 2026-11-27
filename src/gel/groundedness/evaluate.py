@@ -73,6 +73,44 @@ def evaluate_groundedness(
         trace_span_ids=trace_span_ids,
     )
 
+from gel.schema.trace import AgentMessageStep, RetrievalStep, RetrievedDocument, Trace
+
+
+def evaluate_trace_groundedness(
+    trace: Trace,
+    provider: str = "gemini",
+    model: str = "gemini-3.5-flash-lite",
+) -> Signal | None:
+    final_steps = [
+        step
+        for step in trace.steps
+        if isinstance(step, AgentMessageStep) and step.is_final_answer
+    ]
+    if not final_steps:
+        return None
+    final = final_steps[-1]
+
+    retrieval_steps = [
+        step for step in trace.steps if isinstance(step, RetrievalStep)
+    ]
+    if not retrieval_steps:
+        return None
+
+    docs: list[RetrievedDocument] = [
+        doc for step in retrieval_steps for doc in step.retrieved_documents
+    ]
+    span_ids = [step.step_id for step in retrieval_steps] + [final.step_id]
+
+    return evaluate_groundedness(
+        final.content,
+        docs,
+        trace.metadata.trace_id,
+        span_ids,
+        source_step_id=final.step_id,
+        provider=provider,
+        model=model,
+    )
+
 
 if __name__ == "__main__":
     from gel.schema.eval_signal import Severity, Signal
