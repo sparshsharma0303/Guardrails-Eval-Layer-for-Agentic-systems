@@ -1,5 +1,7 @@
 from typing import Any
 
+from gel.schema.trace import ToolCallStep, Trace
+
 
 def validate_tool_args(tool_args: dict[str, Any], schema: dict[str, type]) -> list[str]:
     """Validate a tool's argument dictionary against a simple {arg_name: expected_type} schema.
@@ -30,3 +32,29 @@ def validate_tool_args(tool_args: dict[str, Any], schema: dict[str, type]) -> li
             problems.append(f"unexpected argument '{arg_name}'")
 
     return problems
+
+
+def detect_invalid_tool_args(
+    trace: Trace,
+    schemas: dict[str, dict[str, type]],
+) -> list[tuple[str, str, list[str]]]:
+    """Scan all ToolCallStep entries in a trace and validate their arguments against schemas.
+
+    Returns a list of (tool_name, step_id, problems) tuples in trace order for any
+    tool call with one or more argument validation problems.
+    """
+    findings: list[tuple[str, str, list[str]]] = []
+
+    for step in trace.steps:
+        if not isinstance(step, ToolCallStep):
+            continue
+
+        schema = schemas.get(step.tool_name)
+        if schema is None:
+            continue
+
+        problems = validate_tool_args(step.tool_args, schema)
+        if problems:
+            findings.append((step.tool_name, step.step_id, problems))
+
+    return findings
