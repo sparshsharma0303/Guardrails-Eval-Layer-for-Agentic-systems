@@ -74,4 +74,22 @@ class PayloadRegistry(BaseModel):
                 f"ambiguous: {duplicate_canaries}"
             )
 
+        overlapping_canaries = []
+        for index, payload in enumerate(payloads):
+            for other_index, other_payload in enumerate(payloads):
+                if index >= other_index:
+                    continue
+                if (
+                    payload.canary in other_payload.canary
+                    or other_payload.canary in payload.canary
+                ):
+                    overlapping_canaries.append(
+                        (payload.canary, other_payload.canary)
+                    )
+        if overlapping_canaries:
+            raise ValueError(
+                "a canary contained in another canary makes detection ambiguous; "
+                f"offending pairs: {overlapping_canaries}"
+            )
+
         return payloads

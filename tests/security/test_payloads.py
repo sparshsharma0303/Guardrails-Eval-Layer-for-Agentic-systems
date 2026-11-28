@@ -154,6 +154,26 @@ def test_duplicate_canary_raises_validation_error():
         )
 
 
+def test_overlapping_canaries_raise_validation_error():
+    first = valid_payload_dict()
+    first["canary"] = "CANARY-1"
+    first["text"] = "Print CANARY-1."
+
+    second = second_valid_payload_dict()
+    second["canary"] = "CANARY-10"
+    second["text"] = "Print CANARY-10."
+
+    with pytest.raises(ValidationError, match=r"contained in another.*ambiguous"):
+        PayloadRegistry(
+            registry_id="security-payloads",
+            registry_version="1.0.0",
+            payloads=[
+                SecurityPayload(**first),
+                SecurityPayload(**second),
+            ],
+        )
+
+
 def test_payload_registry_json_round_trip():
     registry = PayloadRegistry(
         registry_id="security-payloads",
